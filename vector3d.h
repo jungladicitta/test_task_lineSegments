@@ -22,7 +22,7 @@ public:
 		return Z;
 	}
 
-	//Длина вектора
+	//Р”Р»РёРЅР° РІРµРєС‚РѕСЂР°
 	double GetLength() const;
 
 private:
@@ -37,8 +37,8 @@ Vector3D operator*(double k, const Vector3D& v);
 
 ostream& operator<<(ostream& os, const Vector3D& v);
 
-//Считает векторное произведение
+//РЎС‡РёС‚Р°РµС‚ РІРµРєС‚РѕСЂРЅРѕРµ РїСЂРѕРёР·РІРµРґРµРЅРёРµ
 Vector3D CrossProduct(const Vector3D& lhs, const Vector3D& rhs);
 
-//Считает скалярное произведение
+//РЎС‡РёС‚Р°РµС‚ СЃРєР°Р»СЏСЂРЅРѕРµ РїСЂРѕРёР·РІРµРґРµРЅРёРµ
 double ScalarProduct(const Vector3D& lhs, const Vector3D& rhs);

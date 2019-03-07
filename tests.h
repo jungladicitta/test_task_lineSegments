@@ -1,3 +1,5 @@
+//набор тестов
+
 #pragma once
 
 #include "test_runner.h"
@@ -59,8 +61,18 @@ void Test_intersected_in_vertex() {
 	ASSERT_EQUAL(result2.point.GetY(), 1.2345);
 	ASSERT_EQUAL(result2.point.GetZ(), 2.3456);
 }
+
+void Test_not_intersected() {
+	auto context = Context(0.000001);
+	auto result1 = Intersect(Segment3D(Vector3D(-1.0,-1.0,-1.0), Vector3D(-2.0,-2.0,-2.0), context),
+							 Segment3D(Vector3D(-0.9,-0.9,-0.9), Vector3D(-2.0,-2.0,-1.9), context),
+							 context );
+	ASSERT_EQUAL(result1.type, TypeOfIntersection::NotIntersected);
+}
+
 void Test_all() {
 	Test_simply_intersected();
 	Test_intersected_in_segment();
 	Test_intersected_in_vertex();
+	Test_not_intersected();
 }

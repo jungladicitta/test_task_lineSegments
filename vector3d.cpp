@@ -17,7 +17,7 @@ ostream& operator<<(ostream& os, const Vector3D& v) {
 	return os;
 }
 
-//Ñ÷èòàåò âåêòîðíîå ïðîèçâåäåíèå
+//Ð¡Ñ‡Ð¸Ñ‚Ð°ÐµÑ‚ Ð²ÐµÐºÑ‚Ð¾Ñ€Ð½Ð¾Ðµ Ð¿Ñ€Ð¾Ð¸Ð·Ð²ÐµÐ´ÐµÐ½Ð¸Ðµ
 Vector3D CrossProduct(const Vector3D& lhs, const Vector3D& rhs) {
 	return Vector3D(lhs.GetY()*rhs.GetZ() - lhs.GetZ()*rhs.GetY(),
 					-lhs.GetX()*rhs.GetZ() + lhs.GetZ()*rhs.GetX(),
@@ -25,7 +25,7 @@ Vector3D CrossProduct(const Vector3D& lhs, const Vector3D& rhs) {
 					);
 }
 
-//Ñ÷èòàåò ñêàëÿðíîå ïðîèçâåäåíèå
+//Ð¡Ñ‡Ð¸Ñ‚Ð°ÐµÑ‚ ÑÐºÐ°Ð»ÑÑ€Ð½Ð¾Ðµ Ð¿Ñ€Ð¾Ð¸Ð·Ð²ÐµÐ´ÐµÐ½Ð¸Ðµ
 double ScalarProduct(const Vector3D& lhs, const Vector3D& rhs) {
 	return lhs.GetX()*rhs.GetX() + lhs.GetY()*rhs.GetY() + lhs.GetZ()*rhs.GetZ();
 }
