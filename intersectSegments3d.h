@@ -2,7 +2,6 @@
 
 #include "vector3d.h"
 #include "segment3d.h"
-#include "context.h"
 
 enum TypeOfIntersection {
 	NotIntersected = 0,
@@ -31,10 +30,10 @@ bool CheckBoundingBox(const Vector3D& v1, const Vector3D& v2);
 //возвращает true - если лежат по разные стороны
 //					или если хотя бы одна из вершин лежит на самой прямой
 //возвращает false - иначе
-bool CheckCrossProducts(const Segment3D& seg1, const Segment3D& seg2, const Context& context);
+bool CheckCrossProducts(const Segment3D& seg1, const Segment3D& seg2);
 
 //Intersect
 //Функция находящая пересечение двух отрезков seg1 и seg2
 //oVector - точка пересечения в случае если отрезки пересекаются в точке
 //oSegment - отрезок пересечения в случае если отрезки пересекаются по отрезку
-Result Intersect(const Segment3D& seg1, const Segment3D& seg2, const Context& context);
+Result Intersect(const Segment3D& seg1, const Segment3D& seg2);

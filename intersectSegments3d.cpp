@@ -1,7 +1,6 @@
 #include "intersectSegments3d.h"
 #include "vector3d.h"
 #include "segment3d.h"
-#include "context.h"
 
 void Result::SetResult(TypeOfIntersection type_, const Vector3D& point_, const Segment3D& lineSegment_) {
 	type = type_;
@@ -38,7 +37,7 @@ bool CheckBoundingBox(const Vector3D& v1, const Vector3D& v2) {
 //возвращает true - если лежат по разные стороны
 //					или если хотя бы одна из вершин лежит на самой прямой
 //возвращает false - иначе
-bool CheckCrossProducts(const Segment3D& seg1, const Segment3D& seg2, const Context& context) {
+bool CheckCrossProducts(const Segment3D& seg1, const Segment3D& seg2) {
 
 	//Составляем векторы для которых будем считать векторное произведения
 	Vector3D v13 = seg2.GetStart() - seg1.GetStart();
@@ -48,8 +47,8 @@ bool CheckCrossProducts(const Segment3D& seg1, const Segment3D& seg2, const Cont
 	//Считаем векторное произведение
 	Vector3D cross_product1 = CrossProduct(v13, v12);
 	Vector3D cross_product2 = CrossProduct(v14, v12);
-	//cout << cross_product1 << endl;
-	//cout << cross_product2 << endl;
+
+
 	//Если эти два векторных произведения противоположно направлены
 	//значит вершины seg2 лежат по разные стороны от прямой проходящей через seg1
 	//Если сонаправлены - по одну сторону
@@ -57,11 +56,11 @@ bool CheckCrossProducts(const Segment3D& seg1, const Segment3D& seg2, const Cont
 	//если cross_product2 равен нулю - вершина end отрезка seg2 лежит на прямой проходящей через seg1
 
 	//проверка сонаправленности векторов
-	if (!context.EqualToZero(cross_product1.GetX()) && !context.EqualToZero(cross_product2.GetX()))
+	if (cross_product1.GetX() > 0 && cross_product2.GetX() > 0)
 		return cross_product1.GetX() * cross_product2.GetX() < 0;
-	else if (!context.EqualToZero(cross_product1.GetY()) && !context.EqualToZero(cross_product2.GetY()))
+	else if (cross_product1.GetY() > 0 && cross_product2.GetY() > 0)
 		return cross_product1.GetY() * cross_product2.GetY() < 0;
-	else if (!context.EqualToZero(cross_product1.GetZ()) && !context.EqualToZero(cross_product2.GetZ()))
+	else if (cross_product1.GetZ() > 0 && cross_product2.GetZ() > 0)
 		return cross_product1.GetZ() * cross_product2.GetZ() < 0;
 
 	return true; //случай когда вершина лежит на прямой проходящей через отрезок
@@ -71,7 +70,7 @@ bool CheckCrossProducts(const Segment3D& seg1, const Segment3D& seg2, const Cont
 //Функция находящая пересечение двух отрезков seg1 и seg2
 //oVector - точка пересечения в случае если отрезки пересекаются в точке
 //oSegment - отрезок пересечения в случае если отрезки пересекаются по отрезку
-Result Intersect(const Segment3D& seg1, const Segment3D& seg2, const Context& context) {
+Result Intersect(const Segment3D& seg1, const Segment3D& seg2) {
 
 	Vector3D oVector;
 	Segment3D oSegment;
@@ -89,7 +88,7 @@ Result Intersect(const Segment3D& seg1, const Segment3D& seg2, const Context& co
 	Vector3D v4 = seg2.GetEnd();
 
 	//проверяем что отрезки лежат в одной плоскости
-	if (fabs(Determinant(v4-v1, v2-v1, v3-v1)) > context.precision) {
+	if (fabs(Determinant(v4-v1, v2-v1, v3-v1)) > 0.0) {
 		result.SetResult(TypeOfIntersection::NotIntersected, oVector, oSegment);    ///1
 		return result;
 	}
@@ -104,14 +103,14 @@ Result Intersect(const Segment3D& seg1, const Segment3D& seg2, const Context& co
 
 		if (CheckBoundingBox(box1_max, box2_min) && (CheckBoundingBox(box2_max, box1_min)))	{ ///2
 
-			if (CheckCrossProducts(seg1, seg2, context) && CheckCrossProducts(seg2, seg1, context)) { ///3
+			if (CheckCrossProducts(seg1, seg2) && CheckCrossProducts(seg2, seg1)) { ///3
 
 				auto cp1 = CrossProduct(v3-v1, v4-v1);
 				auto cp2 = CrossProduct(v3-v2, v4-v2);
 
-				if ((cp1.GetLength() <= context.precision)&&(cp2.GetLength() <= context.precision)) {  //случай когда отрезки лежат на одной прямой
+				if ((cp1.GetLength() <= 0.0)&&(cp2.GetLength() <= 0.0)) {  //случай когда отрезки лежат на одной прямой
 					Vector3D oSegmentPoint1, oSegmentPoint2;
-					if (fabs((v3-v1).GetLength() + (v4-v1).GetLength() - (v3-v4).GetLength()) <= context.precision) {
+					if (fabs((v3-v1).GetLength() + (v4-v1).GetLength() - (v3-v4).GetLength()) <= 0.0) {
 						//случай когда v1 лежит между v3 и v4
 						oSegmentPoint1 = v1;
 					}
@@ -120,7 +119,7 @@ Result Intersect(const Segment3D& seg1, const Segment3D& seg2, const Context& co
 						oSegmentPoint1 = v2;
 					}
 
-					if (fabs((v1-v3).GetLength() + (v2-v3).GetLength() - (v1-v2).GetLength()) <= context.precision) {
+					if (fabs((v1-v3).GetLength() + (v2-v3).GetLength() - (v1-v2).GetLength()) <= 0.0) {
 						//случай когда v3 лежит между v1 и v2
 						oSegmentPoint2 = v3;
 					}
@@ -129,11 +128,11 @@ Result Intersect(const Segment3D& seg1, const Segment3D& seg2, const Context& co
 						oSegmentPoint2 = v4;
 					}
 
-					if ((oSegmentPoint1-oSegmentPoint2).GetLength() <= context.precision) {
-						if ( (((v1-v3).GetLength() <= context.precision) && ((v2-v4).GetLength() <= context.precision)) ||
-							 (((v1-v4).GetLength() <= context.precision) && ((v2-v3).GetLength() <= context.precision)) ) {
+					if ((oSegmentPoint1-oSegmentPoint2).GetLength() <= 0.0) {
+						if ( (((v1-v3).GetLength() <= 0.0) && ((v2-v4).GetLength() <= 0.0)) ||
+							 (((v1-v4).GetLength() <= 0.0) && ((v2-v3).GetLength() <= 0.0)) ) {
 							//Случай когда отрезки совпадают
-							oSegment = Segment3D(v1,v2, context);
+							oSegment = Segment3D(v1,v2);
 						}
 						else {
 							//Случай когда пересекаются в вершине
@@ -142,17 +141,17 @@ Result Intersect(const Segment3D& seg1, const Segment3D& seg2, const Context& co
 							return result;
 						}
 					}
-					else oSegment = Segment3D(oSegmentPoint1, oSegmentPoint2, context);
+					else oSegment = Segment3D(oSegmentPoint1, oSegmentPoint2);
 
 					result.SetResult(TypeOfIntersection::IntersectedInSegment, oVector, oSegment);
 					return result;
 				}
-				else if (cp1.GetLength() <= context.precision) {
+				else if (cp1.GetLength() <= 0.0) {
 					oVector = v1;
 					result.SetResult(TypeOfIntersection::IntersectedInPoint, oVector, oSegment);
 					return result;
 				}
-				else if (cp2.GetLength() <= context.precision) {
+				else if (cp2.GetLength() <= 0.0) {
 					oVector = v2;
 					result.SetResult(TypeOfIntersection::IntersectedInPoint, oVector, oSegment);
 					return result;

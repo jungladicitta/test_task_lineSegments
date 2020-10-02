@@ -6,7 +6,7 @@
 #include "vector3d.h"
 #include "segment3d.h"
 #include "intersectSegments3d.h"
-#include "context.h"
+//#include "context.h"
 #include "test_runner.h"
 #include "tests.h"
 

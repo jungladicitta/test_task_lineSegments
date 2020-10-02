@@ -1,14 +1,14 @@
 #pragma once
 
 #include "vector3d.h"
-#include "context.h"
 
 using namespace std;
 
 class Segment3D {
 public:
 	Segment3D();
-	Segment3D(Vector3D s, Vector3D e, Context context);
+	Segment3D(Vector3D s, Vector3D e);
+
 
 	const Vector3D& GetStart() const {
 		return start;
